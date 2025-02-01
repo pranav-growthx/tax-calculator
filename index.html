@@ -15,15 +15,18 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
+    <link rel="stylesheet" href="styles.css" />
     <script src="tax-calculations.js"></script>
     <script src="app.js"></script>
-    <div class="card">
-      <div class="card-title text-center mb-4">
+  </head>
+  <body>
+    <div class="heading-container">
+      <h1>Income Tax Regime Comparison.</h1>
+    </div>
+    <div class="content-card">
+      <!-- <div class="card-title text-center mb-4">
         <h3>Income Tax Regime Comparison (India)</h3>
-      </div>
+      </div> -->
       <input
         id="incomeInput"
         class="form-control mb-3"
@@ -33,7 +36,7 @@
       />
       <button
         type="button"
-        class="btn btn-secondary"
+        class="btn btn-outline-secondary"
         data-bs-toggle="modal"
         data-bs-target="#deductionModal"
       >
