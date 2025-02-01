@@ -94,9 +94,9 @@
         // New Regime Tax Calculation
         const basicExemption = 75000;
         const taxableIncome = income - basicExemption;
-
+        const maxRebate = 1200000;
         // If income is less than or equal to basic exemption, no tax
-        if (taxableIncome <= 0) {
+        if (taxableIncome <= maxRebate) {
           return 0;
         }
 
