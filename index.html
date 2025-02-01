@@ -34,6 +34,11 @@
         padding: 20px;
       }
 
+      input,
+      button {
+        margin-top: 10px;
+      }
+
       .result {
         margin-top: 15px;
         font-weight: bold;
@@ -88,6 +93,22 @@
         tax *= 1.04;
 
         return tax;
+      }
+
+      function calculateOldRegimeTaxDeductions() {
+        const deductions = {
+          "80c": document.getElementById("80c").value,
+          "80ccd1b": document.getElementById("80ccd1b").value,
+          "80eea": document.getElementById("80eea").value,
+          "80e": document.getElementById("80e").value,
+          "80eeb": document.getElementById("80eeb").value,
+          "80d": document.getElementById("80d").value,
+        };
+
+        return Object.entries(deductions).reduce(
+          (acc, curr) => acc + curr[1],
+          0
+        );
       }
 
       function calculateNewRegimeTax(income) {
@@ -147,8 +168,11 @@
         // Get income from input
         const income = parseFloat(document.getElementById("incomeInput").value);
 
+        const oldTaxRegimeDeductions = calculateOldRegimeTaxDeductions();
         // Calculate taxes for both regimes
-        const oldRegimeTax = calculateOldRegimeTax(income);
+        const oldRegimeTax = calculateOldRegimeTax(
+          income - oldTaxRegimeDeductions
+        );
         const newRegimeTax = calculateNewRegimeTax(income);
 
         // Display result
@@ -160,7 +184,7 @@
               <p>Gross Income: ₹${income.toLocaleString()}</p>
               <p>Basic Exemption: ₹50,000</p>
               <p>Taxable Income: ₹${Math.max(
-                income - 50000,
+                income - 50000 - oldTaxRegimeDeductions,
                 0
               ).toLocaleString()}</p>
               <p>Total Tax Payable: ₹${Math.round(
@@ -201,7 +225,101 @@
         class="form-control mb-3"
         type="number"
         placeholder="Enter your annual income"
+        min="0"
       />
+      <button
+        type="button"
+        class="btn btn-secondary"
+        data-bs-toggle="modal"
+        data-bs-target="#deductionModal"
+      >
+        Add Deductions
+      </button>
+      <div
+        class="modal fade"
+        id="deductionModal"
+        tabindex="-1"
+        aria-labelledby="deductionModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deductionModalLabel">
+                Add Deductions
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="deductionAmount" class="form-label"
+                  >Deduction Amount</label
+                >
+                <input
+                  id="80c"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80C, LIC, ELSS, NPS"
+                />
+                <input
+                  id="80ccd1b"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80CCD1B, NPS"
+                />
+                <input
+                  id="80e"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80E, Interest on Education Loan"
+                />
+                <input
+                  id="80eea"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80EEA, Interest on Home Loan"
+                />
+                <input
+                  id="80eeb"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80EEB, Interest on Electric Vehicle Loan"
+                />
+                <input
+                  id="80d"
+                  type="number"
+                  class="form-control"
+                  aria-describedby="deductionAmountHelp"
+                  placeholder="Section 80D, Medical Insurance"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary">
+                Add Deduction
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <button class="btn btn-primary" onclick="calculateTax()">
         Compare Tax Regimes
       </button>
