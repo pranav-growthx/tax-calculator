@@ -1,0 +1,39 @@
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.card {
+    border: 1px solid #777;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #777;
+    width: min(700px, 90vw);
+    padding: 20px;
+}
+
+input,
+button {
+    margin-top: 10px;
+}
+
+.result {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.regime-comparison {
+    display: flex;
+    justify-content: space-between;
+}
+
+.regime-column {
+    width: 48%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
