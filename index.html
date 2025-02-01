@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Income Tax Regime Comparison</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -11,45 +15,88 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <style>
+      body {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 0;
+      }
+
+      .card {
+        border: 1px solid #777;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #777;
+        width: 700px;
+        padding: 20px;
+      }
+
+      .result {
+        margin-top: 15px;
+        font-weight: bold;
+      }
+
+      .regime-comparison {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .regime-column {
+        width: 48%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+    </style>
   </head>
-  <style>
-    body {
-      background-color: #f8f9fa;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .card {
-      border: 1px solid #777;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #777;
-      width: 400px;
-      padding: 20px;
-    }
-
-    .result {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-  </style>
   <body>
     <script>
-      function calculateTax() {
-        // Get income from input
-        const income = parseFloat(document.getElementById("incomeInput").value);
+      function calculateOldRegimeTax(income) {
+        // Old Regime Tax Calculation
+        const basicExemption = 50000;
+        let taxableIncome = income - basicExemption;
 
-        // Standard exemption
-        const exemption = 75000;
-        const taxableIncome = income - exemption;
+        // If income is less than or equal to basic exemption, no tax
+        if (taxableIncome <= 0) {
+          return 0;
+        }
 
-        // If income is less than or equal to 12 lakh after exemption, no tax
-        if (taxableIncome <= 1200000) {
-          document.getElementById("result").textContent = "No tax payable";
-          document.getElementById("result").classList.add("text-success");
+        let tax = 0;
+
+        // Slab 1: 2.5L-5L @ 5%
+        if (taxableIncome > 250000) {
+          const slab1 = Math.min(taxableIncome, 500000) - 250000;
+          tax += slab1 * 0.05;
+        }
+
+        // Slab 3: 5L-10L @ 20%
+        if (taxableIncome > 500000) {
+          const slab3 = Math.min(taxableIncome, 1000000) - 500000;
+          tax += slab3 * 0.2;
+        }
+
+        // Slab 4: Above 10L @ 30%
+        if (taxableIncome > 1000000) {
+          const slab4 = taxableIncome - 1000000;
+          tax += slab4 * 0.3;
+        }
+
+        // Add 4% cess
+        tax *= 1.04;
+
+        return tax;
+      }
+
+      function calculateNewRegimeTax(income) {
+        // New Regime Tax Calculation
+        const basicExemption = 75000;
+        const taxableIncome = income - basicExemption;
+
+        // If income is less than or equal to basic exemption, no tax
+        if (taxableIncome <= 0) {
           return 0;
         }
 
@@ -91,21 +138,63 @@
           tax += slab6 * 0.3;
         }
 
+        tax *= 1.04; // Add 4% cess
+
+        return tax;
+      }
+
+      function calculateTax() {
+        // Get income from input
+        const income = parseFloat(document.getElementById("incomeInput").value);
+
+        // Calculate taxes for both regimes
+        const oldRegimeTax = calculateOldRegimeTax(income);
+        const newRegimeTax = calculateNewRegimeTax(income);
+
         // Display result
         const resultElement = document.getElementById("result");
         resultElement.innerHTML = `
-            <p>Gross Income: ₹${income.toLocaleString()}</p>
-            <p>Standard Exemption: ₹${exemption.toLocaleString()}</p>
-            <p>Taxable Income: ₹${taxableIncome.toLocaleString()}</p>
-            <p>Total Tax Payable: ₹${Math.round(tax).toLocaleString()}</p>
-          `;
-        resultElement.classList.remove("text-success");
-        resultElement.classList.add("text-primary");
+          <div class="regime-comparison">
+            <div class="regime-column">
+              <h4>Old Tax Regime</h4>
+              <p>Gross Income: ₹${income.toLocaleString()}</p>
+              <p>Basic Exemption: ₹50,000</p>
+              <p>Taxable Income: ₹${Math.max(
+                income - 50000,
+                0
+              ).toLocaleString()}</p>
+              <p>Total Tax Payable: ₹${Math.round(
+                oldRegimeTax
+              ).toLocaleString()}</p>
+            </div>
+            <div class="regime-column">
+              <h4>New Tax Regime</h4>
+              <p>Gross Income: ₹${income.toLocaleString()}</p>
+              <p>Basic Exemption: ₹75,000</p>
+              <p>Taxable Income: ₹${Math.max(
+                income - 75000,
+                0
+              ).toLocaleString()}</p>
+              <p>Total Tax Payable: ₹${Math.round(
+                newRegimeTax
+              ).toLocaleString()}</p>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <p class="fw-bold">
+              ${
+                oldRegimeTax < newRegimeTax
+                  ? "Old Regime is More Beneficial"
+                  : "New Regime is More Beneficial"
+              }
+            </p>
+          </div>
+        `;
       }
     </script>
     <div class="card">
       <div class="card-title text-center mb-4">
-        <h3>Income Tax Calculator (India)</h3>
+        <h3>Income Tax Regime Comparison (India)</h3>
       </div>
       <input
         id="incomeInput"
@@ -114,9 +203,9 @@
         placeholder="Enter your annual income"
       />
       <button class="btn btn-primary" onclick="calculateTax()">
-        Calculate Tax
+        Compare Tax Regimes
       </button>
-      <div id="result" class="result text-center"></div>
+      <div id="result" class="result"></div>
     </div>
   </body>
 </html>
