@@ -8,7 +8,9 @@ body {
   gap: 20px;
   padding: 20px;
 }
-
+.heading-container {
+  padding: 40px;
+}
 .content-card {
   /* border: 1px solid #777;
   border-radius: 10px;
@@ -31,7 +33,7 @@ body {
 }
 
 h1 {
-  font-size: 65px;
+  font-size: 60px;
 }
 
 input,
