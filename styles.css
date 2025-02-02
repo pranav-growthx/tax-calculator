@@ -2,7 +2,7 @@ body {
   background-color: #f8f9fa;
   min-height: 100vh;
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
@@ -20,6 +20,7 @@ body {
 @media screen and (min-width: 580px) {
   body {
     padding: 20px 200px;
+    flex-direction: row;
   }
   .card {
     flex: 5;
